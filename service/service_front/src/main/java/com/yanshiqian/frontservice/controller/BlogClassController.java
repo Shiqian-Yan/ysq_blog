@@ -39,6 +39,12 @@ public class BlogClassController {
         List<BlogClass> list = blogClassService.list(wrapper);
         return R.ok().data("data",list);
     }
+    @Cacheable(key = "'classAllList'",value = "allClass")
+    @GetMapping("getAll")
+    public R getAllAllClass(){
+        List<BlogClass> list = blogClassService.list(null);
+        return R.ok().data("data",list);
+    }
 
 
 }

@@ -1,6 +1,5 @@
 package com.yanshiqian.serurity.security;
 
-
 import com.yanshiqian.commonutils.MD5;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
