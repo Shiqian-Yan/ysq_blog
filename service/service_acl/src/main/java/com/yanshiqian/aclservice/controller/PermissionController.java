@@ -1,8 +1,11 @@
 package com.yanshiqian.aclservice.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yanshiqian.aclservice.entity.Permission;
+import com.yanshiqian.aclservice.entity.RolePermission;
 import com.yanshiqian.aclservice.service.PermissionService;
+import com.yanshiqian.aclservice.service.RolePermissionService;
 import com.yanshiqian.commonutils.R;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,8 @@ public class PermissionController {
 
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private RolePermissionService rolePermissionService;
 
     //获取全部菜单
     @ApiOperation(value = "查询所有菜单")
@@ -45,6 +50,12 @@ public class PermissionController {
     @ApiOperation(value = "给角色分配权限")
     @PostMapping("/doAssign")
     public R doAssign(String roleId,String[] permissionId) {
+        QueryWrapper<RolePermission> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id",roleId);
+        List<RolePermission> list = rolePermissionService.list(queryWrapper);
+        if(list!=null){
+            rolePermissionService.remove(queryWrapper);
+        }
         permissionService.saveRolePermissionRealtionShipGuli(roleId,permissionId);
         return R.ok();
     }

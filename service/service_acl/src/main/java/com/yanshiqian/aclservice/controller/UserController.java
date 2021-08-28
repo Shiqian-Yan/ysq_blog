@@ -100,5 +100,10 @@ public class UserController {
         roleService.saveUserRoleRealtionShip(userId,roleId);
         return R.ok();
     }
+    @GetMapping("get/{id}")
+    public R get(@PathVariable String id) {
+        User user = userService.getById(id);
+        return R.ok().data("item", user);
+    }
 }
 
