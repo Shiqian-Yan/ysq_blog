@@ -7,6 +7,7 @@ import com.yanshiqian.blogclass.service.BlogClassService;
 import com.yanshiqian.commonutils.R;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,38 +25,45 @@ import java.util.List;
 public class BlogClassController {
     @Autowired
     private BlogClassService blogClassService;
+    //@PreAuthorize("hasAuthority('subject.list')")
     @GetMapping("getAllClass")
     public R getAllClass(){
         List<BlogClass> res = blogClassService.getAllChapterClass();
         return R.ok().data("children",res);
     }
+    //@PreAuthorize("hasAuthority('subject.list')")
     @GetMapping("getClass")
     public R getClassAll(){
         List<BlogClass> list = blogClassService.list(null);
         return R.ok().data("data",list);
     }
+    @PreAuthorize("hasAuthority('subject.import')")
     @PostMapping("addClass")
     public R addClass(@RequestBody BlogClass blogClass){
         blogClass.setParentId("0");
         blogClassService.save(blogClass);
         return R.ok();
     }
+    @PreAuthorize("hasAuthority('subject.update')")
     @ApiOperation(value = "修改分类")
     @PostMapping("updateClass")
     public R updateById(@RequestBody BlogClass blogClass) {
         blogClassService.updateById(blogClass);
         return R.ok();
     }
+    @PreAuthorize("hasAuthority('subject.list')")
     @GetMapping("findById/{id}")
     public R findById(@PathVariable String id){
         BlogClass service = blogClassService.getById(id);
         return R.ok().data("data",service);
     }
+    @PreAuthorize("hasAuthority('subject.remove')")
     @DeleteMapping("{id}")
      public R deleteById(@PathVariable String id){
         blogClassService.deleteClassById(id);
          return R.ok();
     }
+    @PreAuthorize("hasAuthority('subject.import')")
     @PostMapping("addsecClass/{parentId}")
     public R addSecClass(@PathVariable String parentId,@RequestBody BlogClass blogClass){
         blogClass.setParentId(parentId);

@@ -12,6 +12,7 @@ import com.yanshiqian.commonutils.R;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
-
+    @PreAuthorize("hasAuthority('user.list')")
     @ApiOperation(value = "获取管理用户分页列表")
     @GetMapping("{page}/{limit}")
     public R index(
@@ -57,7 +58,7 @@ public class UserController {
         IPage<User> pageModel = userService.page(pageParam, wrapper);
         return R.ok().data("items", pageModel.getRecords()).data("total", pageModel.getTotal());
     }
-
+    @PreAuthorize("hasAuthority('user.add')")
     @ApiOperation(value = "新增管理用户")
     @PostMapping("save")
     public R save(@RequestBody User user) {
@@ -65,41 +66,42 @@ public class UserController {
         userService.save(user);
         return R.ok();
     }
-
+    @PreAuthorize("hasAuthority('user.update')")
     @ApiOperation(value = "修改管理用户")
     @PutMapping("update")
     public R updateById(@RequestBody User user) {
         userService.updateById(user);
         return R.ok();
     }
-
+    @PreAuthorize("hasAuthority('user.remove')")
     @ApiOperation(value = "删除管理用户")
     @DeleteMapping("remove/{id}")
     public R remove(@PathVariable String id) {
         userService.removeById(id);
         return R.ok();
     }
-
+    @PreAuthorize("hasAuthority('user.remove')")
     @ApiOperation(value = "根据id列表删除管理用户")
     @DeleteMapping("batchRemove")
     public R batchRemove(@RequestBody List<String> idList) {
         userService.removeByIds(idList);
         return R.ok();
     }
-
+    @PreAuthorize("hasAuthority('user.assign')")
     @ApiOperation(value = "根据用户获取角色数据")
     @GetMapping("/toAssign/{userId}")
     public R toAssign(@PathVariable String userId) {
         Map<String, Object> roleMap = roleService.findRoleByUserId(userId);
         return R.ok().data(roleMap);
     }
-
+    @PreAuthorize("hasAuthority('user.assign')")
     @ApiOperation(value = "根据用户分配角色")
     @PostMapping("/doAssign")
     public R doAssign(@RequestParam String userId,@RequestParam String[] roleId) {
         roleService.saveUserRoleRealtionShip(userId,roleId);
         return R.ok();
     }
+    @PreAuthorize("hasAuthority('user.update')")
     @GetMapping("get/{id}")
     public R get(@PathVariable String id) {
         User user = userService.getById(id);
